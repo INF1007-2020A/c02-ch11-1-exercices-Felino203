@@ -6,7 +6,6 @@ Classes pour représenter un personnage.
 
 
 import random
-
 import utils
 
 
@@ -21,6 +20,22 @@ class Weapon:
 
 	UNARMED_POWER = 20
 
+	def __init__(self, name, power, min_level):
+		self.__name = name
+		self.power = power
+		self.min_level = min_level
+
+	def __str__(self):
+		return f"{self.__name}, power = {self.power}, minimum lvl = {self.min_level}"
+
+	@property
+	def name(self):
+		return self.__name
+
+	@classmethod
+	def make_unarmed(cls):
+		return cls("Hands", cls.UNARMED_POWER, 1)
+
 
 class Character:
 	"""
@@ -33,6 +48,46 @@ class Character:
 	:param level: Le niveau d'expérience du personnage
 	"""
 
+	def __init__(self, name, max_hp, attack, defense, level):
+		self.__name = name
+		self.attack = attack
+		self.max_hp = max_hp
+		self.defense = defense
+		self.level = level
+		self.hp = max_hp
+
+	def __str__(self):
+		return f"{self.__name}, attack = {self.attack}, lvl = {self.level}, holding *{self.__weapon.name}*"
+
+	@property
+	def name(self):
+		return self.__name
+
+	@property
+	def weapon(self):
+		return self.__weapon
+
+	@weapon.setter
+	def weapon(self, val):
+		if val is None:
+			val = Weapon.make_unarmed()
+		if val.min_level > self.level:
+			raise ValueError(Weapon)
+		self.__weapon = val
+
+
+	@property
+	def hp(self):
+		return self.__hp
+
+	@hp.setter
+	def hp(self, val):
+		if 0 <= val <= self.max_hp:
+			return val
+		if 0 > val:
+			return 0
+		if self.max_hp < val:
+			return self.max_hp
 
 
 def deal_damage(attacker, defender):
